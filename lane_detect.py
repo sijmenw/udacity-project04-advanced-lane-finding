@@ -12,10 +12,7 @@ import morph_img
 # init all globally used variables
 
 # get image_size
-img_path = os.path.join("test_images", os.listdir("test_images")[0])
-print("Using: {}".format(img_path))
-ex_img = cv2.imread(img_path)
-img_size = ex_img.shape[1::-1]
+img_size = morph_img.get_img_size()
 
 # Define conversions in x and y from pixels space to meters
 ym_per_pix = 30/720  # meters per pixel in y dimension
@@ -292,6 +289,3 @@ def pipeline(input_img):
     final_img = add_info_to_img(lane_img, (l_curve + r_curve) / 2, vehicle_pos)
 
     return final_img
-
-
-pipeline(ex_img)

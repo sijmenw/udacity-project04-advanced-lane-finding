@@ -10,9 +10,14 @@ import matplotlib.image as mpimg
 
 
 # get image_size
-img_path = os.path.join("test_images", os.listdir("test_images")[0])
-ex_img = cv2.imread(img_path)
-img_size = ex_img.shape[1::-1]
+def get_img_size():
+    img_path = os.path.join("test_images", os.listdir("test_images")[0])
+    ex_img = cv2.imread(img_path)
+    img_size = ex_img.shape[1::-1]
+    return img_size
+
+
+img_size = get_img_size()
 
 
 def get_obj_img_points(nx=9, ny=6, src_dir="camera_cal"):
@@ -53,8 +58,8 @@ def get_calibration(src_dir="camera_cal"):
 ret, mtx, dist, rvecs, tvecs = get_calibration()
 
 
-def undistort_image(img):
-    return cv2.undistort(ex_img, mtx, dist, None, mtx)
+def undistort_image(input_img):
+    return cv2.undistort(input_img, mtx, dist, None, mtx)
 
 
 def get_M_and_minv():
