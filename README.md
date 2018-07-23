@@ -1,7 +1,4 @@
-## Writeup Template
-
-### You can use this file as a template for your writeup if you want to submit it as a markdown file, but feel free to use some other method and submit a pdf if you prefer.
-
+## Writeup
 ---
 
 **Advanced Lane Finding Project**
@@ -20,7 +17,7 @@ The goals / steps of this project are the following:
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/571/view) Points
 
-### Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
+### Rubric points
 
 ---
 
@@ -158,11 +155,11 @@ For each found fit, the distance between the found lane lines and their relative
 if they would differ too much from an "expected value" (hardcoded for distance, compared to eachother for curvature),
 the fit would not be used to predict the next fit.
 
-If a previous fit was found, the starting place for the window lane search is limited to a range from the precvious fit (+- 50 pixels).
+If a previous fit was found, the starting place for the window lane search is limited to a range from the previous fit (+- 50 pixels).
 
 If no passing fit was found for over 10 images, the Fit object is reset and the lane search will be attempted from scratch.
 
-My output video can be found in this repo: `output_vid.mp4`.
+My output video can be found in this repo under the name: `output_vid.mp4`.
 
 ---
 
@@ -172,6 +169,6 @@ My output video can be found in this repo: `output_vid.mp4`.
 
 My code could be improved by attempting to detect more than 2 lane lines, and then use an extra model to rank these 'lane candidates'.
 
-With this method you could gain the maximum from both previous lane findings, and expected values by tuning the second model.
+With this method you could gain the maximum from both previous lane findings and expected values by tuning this extra model.
 
 
