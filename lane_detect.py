@@ -73,9 +73,6 @@ def get_peaks(input_img):
 
 
 def find_lane_pixels(binary_warped):
-    # Create an output image to draw on and visualize the result
-    out_img = np.dstack((binary_warped, binary_warped, binary_warped))
-
     # HYPERPARAMETERS
     # Choose the number of sliding windows
     nwindows = 9
@@ -107,12 +104,6 @@ def find_lane_pixels(binary_warped):
         win_xleft_high = leftx_current + margin
         win_xright_low = rightx_current - margin
         win_xright_high = rightx_current + margin
-
-        # Draw the windows on the visualization image
-        cv2.rectangle(out_img, (win_xleft_low, win_y_low),
-                      (win_xleft_high, win_y_high), (0, 255, 0), 5)
-        cv2.rectangle(out_img, (win_xright_low, win_y_low),
-                      (win_xright_high, win_y_high), (0, 255, 0), 5)
 
         # Identify the nonzero pixels in x and y within the window
         good_left_inds = np.intersect1d(
@@ -153,12 +144,12 @@ def find_lane_pixels(binary_warped):
     rightx = nonzerox[right_lane_inds]
     righty = nonzeroy[right_lane_inds]
 
-    return leftx, lefty, rightx, righty, out_img
+    return leftx, lefty, rightx, righty
 
 
 def fit_polynomial(binary_warped):
     # Find our lane pixels first
-    leftx, lefty, rightx, righty, out_img = find_lane_pixels(binary_warped)
+    leftx, lefty, rightx, righty = find_lane_pixels(binary_warped)
 
     # Fit a second order polynomial to each using `np.polyfit`
     left_fit = np.polyfit(lefty, leftx, 2)
@@ -175,16 +166,7 @@ def fit_polynomial(binary_warped):
         left_fitx = 1 * ploty ** 2 + 1 * ploty
         right_fitx = 1 * ploty ** 2 + 1 * ploty
 
-    ## Visualization ##
-    # Colors in the left and right lane regions
-    out_img[lefty, leftx] = [255, 0, 0]
-    out_img[righty, rightx] = [0, 0, 255]
-
-    # Plots the left and right polynomials on the lane lines
-    plt.plot(left_fitx, ploty, color='yellow')
-    plt.plot(right_fitx, ploty, color='yellow')
-
-    return out_img, left_fit, right_fit, left_fitx, right_fitx, ploty
+    return left_fit, right_fit, left_fitx, right_fitx, ploty
 
 
 def measure_curvature_real(left_fit_cr, right_fit_cr):
@@ -272,7 +254,7 @@ def pipeline(input_img):
     birds_eye_view = morph_img.warp_to_birds_eye(binary_threshold)
 
     # fit polynomial
-    out_img, left_fit, right_fit, left_fitx, right_fitx, ploty = fit_polynomial(birds_eye_view)
+    left_fit, right_fit, left_fitx, right_fitx, ploty = fit_polynomial(birds_eye_view)
 
     # calculate lane curvature
     l_curve, r_curve = measure_curvature_real(left_fit, right_fit)
