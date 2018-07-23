@@ -90,6 +90,7 @@ def get_peaks(input_img):
 
 
 def find_lane_pixels(binary_warped):
+    """ this function is taken largely from the quiz from udacity"""
     # HYPERPARAMETERS
     # Choose the number of sliding windows
     nwindows = 9
@@ -165,6 +166,7 @@ def find_lane_pixels(binary_warped):
 
 
 def fit_polynomial(binary_warped):
+    """ this function is taken largely from the quiz from udacity"""
     # Find our lane pixels first
     leftx, lefty, rightx, righty = find_lane_pixels(binary_warped)
 
