@@ -213,7 +213,7 @@ def position_of_vehicle(left_line, right_line):
     negative is left, positive is right
     """
 
-    pix_from_center = (right_line + left_line) // 2 - img_size[0] // 2
+    pix_from_center = img_size[0] // 2 - (right_line + left_line) // 2
 
     return pix_from_center * xm_per_pix
 
@@ -246,6 +246,19 @@ def draw_lane_on_img(img, left_fitx, right_fitx, ploty):
     return result
 
 
+def add_info_to_img(in_img, curv, pos):
+    output_img = np.copy(in_img)
+    curv_pos = (10, 80)
+    pos_pos = (10, 160)
+
+    cv2.putText(output_img, "Curvature: {:.2}".format(curv),
+                curv_pos, cv2.FONT_HERSHEY_SIMPLEX, 2, (255, 255, 255), 3)
+    cv2.putText(output_img, "Position from center: {:.2}m".format(pos),
+                pos_pos, cv2.FONT_HERSHEY_SIMPLEX, 2, (255, 255, 255), 3)
+
+    return output_img
+
+
 def pipeline(input_img):
     """entire image processing pipeline to go from source image to annotated output image
 
@@ -275,12 +288,10 @@ def pipeline(input_img):
     # draw the detected lane on the source image
     lane_img = draw_lane_on_img(undist, left_fitx, right_fitx, ploty)
 
-    cv2.imshow('undist', undist)
-    cv2.imshow('binary', binary_threshold*255)
-    cv2.imshow('birds_eye_view', birds_eye_view*255)
-    cv2.imshow('lane_img', lane_img)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    # annotate the image
+    final_img = add_info_to_img(lane_img, (l_curve + r_curve) / 2, vehicle_pos)
+
+    return final_img
 
 
 pipeline(ex_img)
