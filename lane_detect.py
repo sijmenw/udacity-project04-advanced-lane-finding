@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 
 import morph_img
+import fit
 
 # init all globally used variables
 
@@ -17,6 +18,9 @@ img_size = morph_img.get_img_size()
 # Define conversions in x and y from pixels space to meters
 ym_per_pix = 30/720  # meters per pixel in y dimension
 xm_per_pix = 3.7/700  # meters per pixel in x dimension
+
+# used to keep track of previous fits
+last_fit = None
 
 
 def abs_sobel_thresh(input_img, thresh_min=5, thresh_max=100):
@@ -66,9 +70,22 @@ def build_histogram(input_img):
 
 
 def get_peaks(input_img):
+    """ if last_fit is present, searches within range of last fit
+
+    :param input_img:
+    :return:
+    """
+    global last_fit
+
     img_hist = build_histogram(input_img)
     # returns the peak for both the left and the right side
     half_size = len(img_hist) // 2
+
+    if last_fit is not None:
+        img_hist[:last_fit.left_peak - last_fit.search_margin] = 0
+        img_hist[last_fit.left_peak + last_fit.search_margin:last_fit.right_peak - last_fit.search_margin] = 0
+        img_hist[last_fit.right_peak + last_fit.search_margin:] = 0
+
     return np.argmax(img_hist[:half_size]), np.argmax(img_hist[half_size:]) + half_size
 
 
@@ -238,12 +255,16 @@ def add_info_to_img(in_img, curv, pos):
     return output_img
 
 
-def pipeline(input_img, last_fit=None):
+def pipeline(input_img):
     """entire image processing pipeline to go from source image to annotated output image
 
     :param input_img:
     :return:
     """
+    global last_fit
+
+    curr_fit = fit.Fit()
+
     # undistort image
     undist = morph_img.undistort_image(input_img)
 
@@ -255,19 +276,37 @@ def pipeline(input_img, last_fit=None):
 
     # fit polynomial
     left_fit, right_fit, left_fitx, right_fitx, ploty = fit_polynomial(birds_eye_view)
+    curr_fit.set_fits(left_fit, right_fit)
 
     # calculate lane curvature
     l_curve, r_curve = measure_curvature_real(left_fit, right_fit)
+    curr_fit.set_curves(l_curve, r_curve)
 
     # calculate position of vehicle
     left_peak, right_peak = get_peaks(birds_eye_view)
+    curr_fit.set_peaks(left_peak, right_peak)
     vehicle_pos = position_of_vehicle(left_peak,
                                       right_peak)  # TODO fix this to take most recent left/right instead o hist
+    curr_fit.vehicle_pos = vehicle_pos
 
     # draw the detected lane on the source image
     lane_img = draw_lane_on_img(undist, left_fitx, right_fitx, ploty)
 
     # annotate the image
     final_img = add_info_to_img(lane_img, (l_curve + r_curve) / 2, vehicle_pos)
+
+    # if current found fit makes sense, use it for the next prediction
+    # if not, increase the age of the last fit, if too old, search from scratch
+    if curr_fit.is_sane():
+        last_fit = curr_fit
+        last_fit.age = 0
+    else:
+        try:
+            last_fit.age += 1
+
+            if last_fit.age >= 10:
+                last_fit = None
+        except AttributeError:
+            pass
 
     return final_img
