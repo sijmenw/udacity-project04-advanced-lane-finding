@@ -36,9 +36,7 @@ opencv's `calibrateCamera` and `undistort`.
 
 Below are an example of a distorted and undistorted image:
 
-<img src="./output_images/checkerboard_dist.png"/>
-
-<img src="./output_images/checkerboard_undist.png"/>
+<img src="./output_images/checkerboards.png"/>
 
 
 ### Pipeline (single images)
