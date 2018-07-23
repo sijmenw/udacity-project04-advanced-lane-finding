@@ -238,7 +238,7 @@ def add_info_to_img(in_img, curv, pos):
     return output_img
 
 
-def pipeline(input_img):
+def pipeline(input_img, last_fit=None):
     """entire image processing pipeline to go from source image to annotated output image
 
     :param input_img:
