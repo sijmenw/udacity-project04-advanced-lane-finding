@@ -130,8 +130,10 @@ and the center of the entire image (this assumes the camera is pointed to the fr
 The number of horizontal pixels per meter ratio is then used to transform this number to a distance in m.
 
 The ratios are set to the following values:
+```
 ym_per_pix = 3/325  # meters per pixel in y dimension
 xm_per_pix = 3.7/770  # meters per pixel in x dimension
+```
 
 These values are handpicked from an example image and are illustrated below.
 Green lines are the handpicked values, yellow are the found lane pixels.
@@ -178,4 +180,7 @@ My code could be improved by attempting to detect more than 2 lane lines, and th
 
 With this method you could gain the maximum from both previous lane findings and expected values by tuning this extra model.
 
+The value for the lane curvature is overestimated, this overestimation could probably be
+ reduced by looking at a larger portion of the lane ahead.
+ If there is a curve, the polynomial will have to curve a bit more to represent it correctly.
 
