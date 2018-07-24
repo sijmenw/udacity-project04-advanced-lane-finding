@@ -46,7 +46,7 @@ class Fit:
                 return False
 
         # check approx distance in pixels
-        target_distance = 700
+        target_distance = 770
         target_margin = 150
         if np.abs(self.left_peak - self.right_peak) - target_distance > target_margin:
             print(

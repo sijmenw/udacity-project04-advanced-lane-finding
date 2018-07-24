@@ -129,6 +129,15 @@ The calculation is based on the number of pixels from the center of the two lane
 and the center of the entire image (this assumes the camera is pointed to the front without error).
 The number of horizontal pixels per meter ratio is then used to transform this number to a distance in m.
 
+The ratios are set to the following values:
+ym_per_pix = 3/325  # meters per pixel in y dimension
+xm_per_pix = 3.7/770  # meters per pixel in x dimension
+
+These values are handpicked from an example image and are illustrated below.
+Green lines are the handpicked values, yellow are the found lane pixels.
+
+<img src="./output_images/lane_marker_dist.png"/>
+
 #### 6. Final result
 
 The final result is created by drawing the detected lane and the found information on the input image.

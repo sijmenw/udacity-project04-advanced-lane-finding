@@ -16,8 +16,9 @@ import fit
 img_size = morph_img.get_img_size()
 
 # Define conversions in x and y from pixels space to meters
-ym_per_pix = 30/720  # meters per pixel in y dimension
-xm_per_pix = 3.7/700  # meters per pixel in x dimension
+# the distance between two lane markers is 3 meters
+ym_per_pix = 3/325  # meters per pixel in y dimension
+xm_per_pix = 3.7/770  # meters per pixel in x dimension
 
 # used to keep track of previous fits
 last_fit = None
